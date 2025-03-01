@@ -36,6 +36,9 @@
     <ClCompile Include="orbit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="meteor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="character.h">
@@ -45,6 +48,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="orbit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="meteor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
