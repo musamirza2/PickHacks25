@@ -38,5 +38,4 @@ public:
 	void stopDown();
 
 	void update(float elapsedTime);
-
 };
