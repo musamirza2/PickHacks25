@@ -1,5 +1,6 @@
 #include "engine.h"
 #include "meteor.h"
+#include "Menu.h"
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <cstdlib>
@@ -7,7 +8,7 @@
 
 using namespace sf;
 
-engine::engine() {
+engine::engine() : menu(VideoMode::getDesktopMode().width, VideoMode::getDesktopMode().height) {
     Vector2f resolution;
     resolution.x = VideoMode::getDesktopMode().width;
     resolution.y = VideoMode::getDesktopMode().height;
@@ -21,12 +22,24 @@ void engine::start() {
         Time dt = clock.restart();
         float dtAsSeconds = dt.asSeconds();
 
-        input();
-        if (!gamePaused) {
-            update(dtAsSeconds);
+        input(); // Calls input() from input.cpp
+
+        if (isMenuActive) {
+            c_Window.clear();
+            menu.draw(c_Window);
+            c_Window.display();
         }
-        draw();
+        else {
+            if (!gamePaused) {
+                update(dtAsSeconds); // Calls update() from update.cpp
+            }
+            draw(); // Calls draw() from draw.cpp
+        }
     }
+}
+
+void engine::spawnMeteor() {
+    meteors.emplace_back(c_Window.getSize());
 }
 
 bool engine::checkCollision() {
@@ -49,9 +62,3 @@ bool engine::checkCollision() {
     }
     return false;
 }
-
-void engine::spawnMeteor() {
-    meteors.emplace_back(c_Window.getSize());
-}
-
-

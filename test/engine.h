@@ -1,17 +1,18 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include "meteor.h"
+#include "Menu.h"
 #include "character.h"
 #include "orbit.h"
-#include "meteor.h"
 
 using namespace sf;
-
-class meteor;
 
 class engine {
 private:
     RenderWindow c_Window;
+    Menu menu;
+    bool isMenuActive = true;
     orbit inst_orbit = orbit(100.f, 5.f);
     character inst_character = character(Vector2f(960.f + 85.0f, 540.f));
 

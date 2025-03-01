@@ -137,6 +137,7 @@
     <ClCompile Include="engine.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="menu.cpp" />
     <ClCompile Include="meteor.cpp" />
     <ClCompile Include="orbit.cpp" />
     <ClCompile Include="update.cpp" />
@@ -144,6 +145,7 @@
   <ItemGroup>
     <ClInclude Include="character.h" />
     <ClInclude Include="engine.h" />
+    <ClInclude Include="menu.h" />
     <ClInclude Include="meteor.h" />
     <ClInclude Include="orbit.h" />
   </ItemGroup>
