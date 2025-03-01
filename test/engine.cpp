@@ -22,7 +22,8 @@ void engine::start() {
 		draw();
 	}
 }
-
+/*
 Vector2f get_resolution() {
 	return c_Window;
 }
+*/
