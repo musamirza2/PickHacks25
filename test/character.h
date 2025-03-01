@@ -38,6 +38,6 @@ public:
 	void stopDown();
 
 	void update(float elapsedTime);
-	void physics();
+
 
 };
