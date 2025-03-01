@@ -6,11 +6,11 @@ using namespace sf;
 class character {
 private:
     Vector2f m_Position;
-    Vector2f velocity = { 0.f, 0.f };
-    float acceleration = 3000.f;
-    float friction = 2000.f;
-    float maxSpeed = 9000.f;
+    float acceleration = 10.f;
+    float friction = 8.0f;
+    float maxSpeed = 10.f;
     CircleShape ballShape;
+
 
     // Where character is currently moving
     bool c_leftButton{};

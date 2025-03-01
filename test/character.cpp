@@ -1,6 +1,6 @@
 #include "character.h"
 #include "engine.h"
-
+#include "math.h"
 using namespace sf;
 
 character::character(Vector2f spawnPosition)
@@ -49,31 +49,35 @@ void character::stopDown() {
 }
 
 void character::update(float elapsedTime) {
-    Vector2f direction{ 0.f, 0.f };
 
-    if (c_rightButton) direction.x += 1.f;
-    if (c_leftButton) direction.x -= 1.f;
-    if (c_upButton) direction.y -= 1.f;
-    if (c_downButton) direction.y += 1.f;
+    Vector2f center((VideoMode::getDesktopMode().width - 25) / 2, (VideoMode::getDesktopMode().height - 50) / 2);
+    float direction = 0.f;
 
-    if (direction.x != 0.f || direction.y != 0.f) {
-        float length = std::sqrt(direction.x * direction.x + direction.y * direction.y); // Finds magnitude
-        direction /= length; // Normalize
-        velocity += direction * acceleration * elapsedTime;
-    }
+    float deltaX = m_Position.x - center.x;
+    float deltaY = m_Position.y - center.y;
+    float magnatude = std::sqrt(deltaX * deltaX + deltaY * deltaY);
+    float phasor = std::atan2(deltaY, deltaX);
+    static float angularSpeed = 0.f;
+
+
+
+
+    if (c_rightButton) angularSpeed -= acceleration * elapsedTime;
+    if (c_leftButton) angularSpeed += acceleration * elapsedTime;
+
     else {
-        // Apply friction if no input (deceleration)
-        if (velocity.x > 0.f) velocity.x = std::max(0.f, velocity.x - friction * elapsedTime);
-        if (velocity.x < 0.f) velocity.x = std::min(0.f, velocity.x + friction * elapsedTime);
-        if (velocity.y > 0.f) velocity.y = std::max(0.f, velocity.y - friction * elapsedTime);
-        if (velocity.y < 0.f) velocity.y = std::min(0.f, velocity.y + friction * elapsedTime);
+        if (angularSpeed > 0.f) angularSpeed = std::max(0.f, angularSpeed - friction * elapsedTime);
+        if (angularSpeed < 0.f) angularSpeed = std::min(0.f, angularSpeed + friction * elapsedTime);
     }
 
-    float speed = std::sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-    if (speed > maxSpeed) {
-        velocity = (velocity / speed) * maxSpeed;
-    }
+    if (angularSpeed > maxSpeed) angularSpeed = maxSpeed;
+    if (angularSpeed < -maxSpeed) angularSpeed = -maxSpeed;
 
-    m_Position += velocity * elapsedTime;
+    phasor += angularSpeed * elapsedTime;
+
+
+    m_Position.x = center.x + magnatude * std::cos(phasor);
+    m_Position.y = center.y + magnatude * std::sin(phasor);
+
     ballShape.setPosition(m_Position);
 }
