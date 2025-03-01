@@ -33,12 +33,18 @@
     <ClCompile Include="update.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="orbit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="character.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="engine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="orbit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
