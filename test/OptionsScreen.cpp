@@ -1,22 +1,24 @@
 #include "OptionsScreen.h"
 
-OptionsScreen::OptionsScreen(float width, float height) {
+OptionsScreen::OptionsScreen(float width, float height)
+    : background(width, height, { "frame1.png", "frame2.png", "frame3.png", "frame4.png", "frame5.png", "frame6.png" }) { // Load animated background
+
     if (!font.loadFromFile("QABAXEL.ttf")) {
         std::cerr << "Error loading font\n";
     }
 
-    // Initialize buttons
+    // Initialize buttons (Transparent background)
     easyButton.setSize(sf::Vector2f(200, 50));
     easyButton.setPosition(width / 2 - 100, height / 3);
-    easyButton.setFillColor(sf::Color::Black);
+    easyButton.setFillColor(sf::Color::Transparent);
 
     hardButton.setSize(sf::Vector2f(200, 50));
     hardButton.setPosition(width / 2 - 100, height / 3 + 60);
-    hardButton.setFillColor(sf::Color::Black);
+    hardButton.setFillColor(sf::Color::Transparent);
 
     backButton.setSize(sf::Vector2f(200, 50));
     backButton.setPosition(width / 2 - 100, height / 3 + 120);
-    backButton.setFillColor(sf::Color::Black);
+    backButton.setFillColor(sf::Color::Transparent);
 
     // Initialize labels
     easyLabel.setFont(font);
@@ -43,7 +45,7 @@ OptionsScreen::OptionsScreen(float width, float height) {
     volumeSlider.setFillColor(sf::Color::Blue);
 
     volumeText.setFont(font);
-    volumeText.setString("Volume: " + std::to_string(currentVolume)); // Uses `currentVolume`
+    volumeText.setString("Volume: " + std::to_string(currentVolume));
     volumeText.setCharacterSize(24);
     volumeText.setFillColor(sf::Color::White);
     volumeText.setPosition(volumeSlider.getPosition().x, volumeSlider.getPosition().y - 30);
@@ -54,46 +56,46 @@ void OptionsScreen::handleEvent(sf::Event event, sf::RenderWindow& window, bool&
 
     // Detect mouse hover over buttons
     if (easyButton.getGlobalBounds().contains(mousePos)) {
-        selectedOption = 0;  // Highlight Easy
+        selectedOption = 0;
     }
     else if (hardButton.getGlobalBounds().contains(mousePos)) {
-        selectedOption = 1;  // Highlight Hard
+        selectedOption = 1;
     }
     else if (backButton.getGlobalBounds().contains(mousePos)) {
-        selectedOption = 2;  // Highlight Back
+        selectedOption = 2;
     }
 
     if (event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::Up) {
-            selectedOption = (selectedOption - 1 + 3) % 3;  // Wrap around selection
+            selectedOption = (selectedOption - 1 + 3) % 3;
         }
         else if (event.key.code == sf::Keyboard::Down) {
             selectedOption = (selectedOption + 1) % 3;
         }
         else if (event.key.code == sf::Keyboard::Enter) {
             if (selectedOption == 0) {
-                difficulty = "Easy";  // Set difficulty to Easy
+                difficulty = "Easy";
             }
             else if (selectedOption == 1) {
-                difficulty = "Hard";  //Set difficulty to Hard
+                difficulty = "Hard";
             }
             else if (selectedOption == 2) {
-                inOptions = false;   // Exit to Main Menu
+                inOptions = false;
                 inMenu = true;
             }
         }
     }
 
-    // Fix: Allow mouse scrolling for volume slider
+    // Allow mouse scrolling for volume slider
     if (event.type == sf::Event::MouseWheelMoved) {
         currentVolume += event.mouseWheel.delta * 5;
         if (currentVolume < 0) currentVolume = 0;
         if (currentVolume > 100) currentVolume = 100;
 
-        volumeText.setString("Volume: " + std::to_string(currentVolume));  // Update text dynamically
+        volumeText.setString("Volume: " + std::to_string(currentVolume));
     }
 
-    //Fix: Handle Mouse Click Selection
+    // Handle Mouse Click Selection
     if (event.type == sf::Event::MouseButtonPressed) {
         if (event.mouseButton.button == sf::Mouse::Left) {
             if (easyButton.getGlobalBounds().contains(mousePos)) {
@@ -110,33 +112,32 @@ void OptionsScreen::handleEvent(sf::Event event, sf::RenderWindow& window, bool&
     }
 }
 
-
 void OptionsScreen::draw(sf::RenderWindow& window) {
-    // Default button and text colors
-    easyButton.setFillColor(sf::Color::Black);
+    background.update();
+    background.draw(window);
+
+    // Keep buttons transparent
+    easyButton.setFillColor(sf::Color::Transparent);
+    hardButton.setFillColor(sf::Color::Transparent);
+    backButton.setFillColor(sf::Color::Transparent);
+
+    // Default text color
     easyLabel.setFillColor(sf::Color::White);
-
-    hardButton.setFillColor(sf::Color::Black);
     hardLabel.setFillColor(sf::Color::White);
-
-    backButton.setFillColor(sf::Color::Black);
     backButtonText.setFillColor(sf::Color::White);
 
-    // Highlight the selected option (Yellow Button with Black Text)
+    // Highlight the selected text only
     if (selectedOption == 0) {
-        easyButton.setFillColor(sf::Color::Yellow);
-        easyLabel.setFillColor(sf::Color::Black);
+        easyLabel.setFillColor(sf::Color::Yellow);
     }
     else if (selectedOption == 1) {
-        hardButton.setFillColor(sf::Color::Yellow);
-        hardLabel.setFillColor(sf::Color::Black);
+        hardLabel.setFillColor(sf::Color::Yellow);
     }
     else if (selectedOption == 2) {
-        backButton.setFillColor(sf::Color::Yellow);
-        backButtonText.setFillColor(sf::Color::Black);
+        backButtonText.setFillColor(sf::Color::Yellow);
     }
 
-    // Draw all elements
+    // Draw everything
     window.draw(easyButton);
     window.draw(hardButton);
     window.draw(backButton);

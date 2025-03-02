@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "Background.h"
 
 #define MENU_ITEMS 3
 
@@ -9,6 +10,9 @@ private:
     sf::Text menu[MENU_ITEMS];
     int selectedItemIndex;
 
+    // Background
+    Background background;
+
 public:
     Menu(float width, float height);
 
@@ -17,7 +21,7 @@ public:
     void moveDown();
     int getSelectedItem();
 
-    // New functions for Mouse Hover & Click
+    // Mouse interaction functions
     void handleMouseHover(sf::Vector2f mousePos);
     int handleMouseClick(sf::Vector2f mousePos);
 };

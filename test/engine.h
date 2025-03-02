@@ -4,6 +4,7 @@
 #include "meteor.h"
 #include "Menu.h"
 #include "character.h"
+#include "background.h"
 #include "orbit.h"
 #include "OptionsScreen.h"  // Include OptionsScreen
 
@@ -13,6 +14,7 @@ class engine {
 private:
     RenderWindow c_Window;
     Menu menu;
+    Background background;
     OptionsScreen* optionsScreen = nullptr;  // Use pointer for dynamic allocation
     bool isMenuActive = true;
     bool isGameOver = false;

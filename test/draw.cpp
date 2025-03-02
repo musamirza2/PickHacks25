@@ -3,7 +3,9 @@
 using namespace sf;
 
 void engine::draw() {
-    c_Window.clear(Color::Black);
+    c_Window.clear();
+    background.update();
+    background.draw(c_Window);
 
     inst_orbit.draw(c_Window);
     c_Window.draw(inst_character.get_ballShape());

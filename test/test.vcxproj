@@ -132,6 +132,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="background.cpp" />
     <ClCompile Include="character.cpp" />
     <ClCompile Include="draw.cpp" />
     <ClCompile Include="engine.cpp" />
@@ -144,6 +145,7 @@
     <ClCompile Include="update.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="background.h" />
     <ClInclude Include="character.h" />
     <ClInclude Include="engine.h" />
     <ClInclude Include="menu.h" />

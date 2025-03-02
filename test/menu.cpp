@@ -1,7 +1,9 @@
 #include "menu.h"
 #include <iostream>
 
-Menu::Menu(float width, float height) {
+Menu::Menu(float width, float height)
+    : background(width, height, { "frame1.png", "frame2.png", "frame3.png", "frame4.png", "frame5.png", "frame6.png" }) {
+
     if (!font.loadFromFile("QABAXEL.ttf")) {
         std::cerr << "Error loading font\n";
     }
@@ -21,6 +23,9 @@ Menu::Menu(float width, float height) {
 }
 
 void Menu::draw(sf::RenderWindow& window) {
+    background.update();
+    background.draw(window);
+
     for (int i = 0; i < MENU_ITEMS; i++) {
         window.draw(menu[i]);
     }
@@ -46,24 +51,22 @@ int Menu::getSelectedItem() {
     return selectedItemIndex;
 }
 
-// Handle Mouse Hover Effect
 void Menu::handleMouseHover(sf::Vector2f mousePos) {
     for (int i = 0; i < MENU_ITEMS; i++) {
         if (menu[i].getGlobalBounds().contains(mousePos)) {
-            menu[selectedItemIndex].setFillColor(sf::Color::White); // Reset old selection
-            selectedItemIndex = i; // Update selection
+            menu[selectedItemIndex].setFillColor(sf::Color::White);
+            selectedItemIndex = i;
             menu[selectedItemIndex].setFillColor(sf::Color::Yellow);
             break;
         }
     }
 }
 
-// Handle Mouse Click Selection
 int Menu::handleMouseClick(sf::Vector2f mousePos) {
     for (int i = 0; i < MENU_ITEMS; i++) {
         if (menu[i].getGlobalBounds().contains(mousePos)) {
-            return i; // Return index of clicked menu item
+            return i;
         }
     }
-    return -1; // No selection
+    return -1;
 }

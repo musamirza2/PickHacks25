@@ -3,30 +3,29 @@
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include "Background.h" // Added background support
 
 class OptionsScreen {
 public:
     OptionsScreen(float width, float height);  // Constructor
 
-    // Event handling for mouse interactions
     void handleEvent(sf::Event event, sf::RenderWindow& window, bool& inOptions, bool& inMenu);
-
-    // Function to draw the options screen
     void draw(sf::RenderWindow& window);
 
-    // Getter functions
-    std::string getDifficulty() const;  // Returns "Easy" or "Hard"
-    int getVolume() const;  // Returns volume slider value
+    std::string getDifficulty() const;
+    int getVolume() const;
 
 private:
+    Background background; // Background animation
+
     sf::RectangleShape easyButton;
     sf::RectangleShape hardButton;
     sf::RectangleShape backButton;
     sf::RectangleShape volumeSlider;
 
-    int currentVolume = 50;  // Ensure `currentVolume` is properly initialized
-    int selectedOption = 0;  // Tracks which option is selected
-    std::string difficulty = "Easy"; // Default difficulty setting
+    int currentVolume = 50;
+    int selectedOption = 0;
+    std::string difficulty = "Easy";
 
     sf::Text easyLabel;
     sf::Text hardLabel;

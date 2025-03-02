@@ -10,7 +10,9 @@
 using namespace sf;
 
 engine::engine()
-    : menu(VideoMode::getDesktopMode().width, VideoMode::getDesktopMode().height) {
+    : menu(VideoMode::getDesktopMode().width, VideoMode::getDesktopMode().height),
+        background(VideoMode::getDesktopMode().width, VideoMode::getDesktopMode().height,
+            { "frame1.png", "frame2.png", "frame3.png", "frame4.png", "frame5.png", "frame6.png" }) {
     Vector2f resolution;
     resolution.x = static_cast<float>(VideoMode::getDesktopMode().width);
     resolution.y = static_cast<float>(VideoMode::getDesktopMode().height);
