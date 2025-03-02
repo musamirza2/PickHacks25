@@ -1,25 +1,38 @@
 #include "character.h"
 #include "engine.h"
 #include "math.h"
+#include "cmath"
 #include "TextureManager.h"
 using namespace sf;
 
+float pie = 3.141592653589793238462643383;
+
 character::character(Vector2f spawnPosition, TextureManager& texManager)
 {
-    Character_sprite.setTexture(texManager.getTexture("C:/Users/solan/source/repos/PickHacks25/test/PLAYER.PNG"));
-
-    ballShape.setRadius(15.5f);
-    Character_sprite.setScale(3.f,3.f);
-    ballShape.setFillColor(Color::Transparent);
+    Character_sprite.setTexture(texManager.getTexture("PLAYER.PNG"));
+    FloatRect spriteBounds = Character_sprite.getGlobalBounds();
+    float spriteDiameter = std::max(spriteBounds.width, spriteBounds.height);
     m_Position = spawnPosition;  // Set the spawn position
+
+    // Adjust ballShape to match sprite size
+    ballShape.setRadius(spriteDiameter);
+    ballShape.setFillColor(Color::Transparent);
+
+    ballShape.setOrigin(ballShape.getRadius(), ballShape.getRadius());
+    Character_sprite.setOrigin(Character_sprite.getTexture()->getSize().x / 2.f, Character_sprite.getTexture()->getSize().y / 2.f);
+
+    Character_sprite.setScale(3.f, 3.f);
+
+
     ballShape.setPosition(m_Position);
     Character_sprite.setPosition(m_Position);
+
 }
 
-CircleShape character::get_ballShape()
-{
+const CircleShape& character::get_ballShape() const {
     return ballShape;
 }
+
 
 const Sprite& character::getSprite() const {
     return Character_sprite;
@@ -57,36 +70,42 @@ void character::stopDown() {
 }
 
 void character::update(float elapsedTime) {
-
-    Vector2f center((VideoMode::getDesktopMode().width - 25) / 2, (VideoMode::getDesktopMode().height - 50) / 2);
-    float direction = 0.f;
-
-    float deltaX = m_Position.x - center.x;
-    float deltaY = m_Position.y - center.y;
-    float magnatude = std::sqrt(deltaX * deltaX + deltaY * deltaY);
-    float phasor = std::atan2(deltaY, deltaX);
-    static float angularSpeed = 0.f;
-
-
-
-
-    if (c_rightButton) angularSpeed -= acceleration * elapsedTime;
-    if (c_leftButton) angularSpeed += acceleration * elapsedTime;
-
+    // Angular acceleration control
+    if (c_rightButton) angularVelocity -= acceleration * elapsedTime;  // Clockwise
+    if (c_leftButton) angularVelocity += acceleration * elapsedTime;   // Counterclockwise
     else {
-        if (angularSpeed > 0.f) angularSpeed = std::max(0.f, angularSpeed - friction * elapsedTime);
-        if (angularSpeed < 0.f) angularSpeed = std::min(0.f, angularSpeed + friction * elapsedTime);
+        // Apply friction when no input
+        if (angularVelocity > 0.f) angularVelocity = std::max(0.f, angularVelocity - friction * elapsedTime);
+        if (angularVelocity < 0.f) angularVelocity = std::min(0.f, angularVelocity + friction * elapsedTime);
     }
 
-    if (angularSpeed > maxSpeed) angularSpeed = maxSpeed;
-    if (angularSpeed < -maxSpeed) angularSpeed = -maxSpeed;
+    // Clamp angular velocity
+    if (angularVelocity > maxSpeed) angularVelocity = maxSpeed;
+    if (angularVelocity < -maxSpeed) angularVelocity = -maxSpeed;
 
-    phasor += angularSpeed * elapsedTime;
+    // Update angle based on velocity
+    angle += angularVelocity * elapsedTime;
 
+    // Convert polar coordinates to Cartesian position
+    m_Position.x = center.x + radius * std::cos(angle);
+    m_Position.y = center.y + radius * std::sin(angle);
 
-    m_Position.x = center.x + magnatude * std::cos(phasor);
-    m_Position.y = center.y + magnatude * std::sin(phasor);
+    // Ensure tangential direction
+    float tangentX = -std::sin(angle);  // Derivative of cos(angle)
+    float tangentY = std::cos(angle);   // Derivative of sin(angle)
 
+    // Update character position
     ballShape.setPosition(m_Position);
     Character_sprite.setPosition(m_Position);
+
+    if (angularVelocity > 0) {
+        Character_sprite.setScale(3.f, -3.f);  // Face right
+    }
+    else if (angularVelocity < 0) {
+        Character_sprite.setScale(3.f, 3.f); // Face left
+    }
+
+ 
+    float rotationAngle = std::atan2(tangentY, tangentX) * 180.f / pie; // pie
+    Character_sprite.setRotation(rotationAngle-90);
 }

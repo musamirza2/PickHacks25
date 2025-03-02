@@ -19,7 +19,7 @@ private:
     OptionsScreen* optionsScreen = nullptr;  // Use pointer for dynamic allocation
     bool isMenuActive = true;
     bool isGameOver = false;
-    float meteorSpawnRate =1.5f; 
+    float meteorSpawnRate =100.5f; 
     int meteorBatchSize = 1;
     bool isOptionsActive = false;
     int gameOverSelection = 0;
@@ -49,12 +49,15 @@ private:
     sf::Text scoreText;
     sf::Text highScoreText;
     void resetScore();
-
-
+    bool hardDifficulty;
+    int level = 1; // Current game level
+    int scoreThreshold = 100;
+    Text levelText;
+    void increaseLevel();
 
 public:
     engine();
-    ~engine();  //  Destructor for memory cleanup
+    ~engine();  //  Destructor for Memory 
     void start();
     void increaseScore(int value);
     void setDifficulty(bool hardMode);

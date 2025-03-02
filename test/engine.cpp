@@ -33,13 +33,19 @@ engine::engine()
     scoreText.setString("Score: " + std::to_string(score));
 
 
-    // Initialize high score text (Displayed in the game window)
+    // Initialize high score text
     highScoreText.setFont(font);
     highScoreText.setCharacterSize(40);
     highScoreText.setFillColor(Color::Yellow);
     highScoreText.setPosition(20, 80);  // Positioned below the score
     highScoreText.setString("High Score: 0");
 
+    //level text
+    levelText.setFont(font);
+    levelText.setCharacterSize(40);
+    levelText.setFillColor(Color::White);
+    levelText.setPosition(20, 140); // Position it below the score
+    levelText.setString("Level: 1");
 
     //  Initialize OptionsScreen
     optionsScreen = new OptionsScreen(resolution.x, resolution.y);
@@ -89,6 +95,9 @@ void engine::increaseScore(int value) {
     score += value;
     scoreText.setString("Score: " + std::to_string(score));
     // Check if the new score is the highest in the current session
+    if (score >= scoreThreshold) {
+        increaseLevel();
+    }
 
     if (score > highestScore) {
         highestScore = score;
@@ -111,6 +120,11 @@ void engine::resetGame() {
 
     meteorSpawnClock.restart();  //  Restart meteor spawn timer
     resetScore();  // Call the function to reset score
+    level = 1;  // Reset level
+    // Reset Diff
+    meteorSpeed = hardDifficulty ? 200.f : 100.f;
+    meteorSpawnRate = hardDifficulty ? 1.25f : 2.5f;
+    meteorBatchSize = hardDifficulty ? 2 : 1;
 
     c_Window.clear();
     draw();
@@ -141,16 +155,34 @@ void engine::handleGameOver() {
 
 TextureManager texManager;
 void engine::spawnMeteor() {
-    float meteorX = static_cast<float>(std::rand() % c_Window.getSize().x);
-    float meteorY = 0; // Meteors start from the top
+    for (int i = 0; i < meteorBatchSize; i++) {
+        float meteorX, meteorY;
+        int edge = std::rand() % 4; // Pick a random edge (0: top, 1: bottom, 2: left, 3: right)
 
-    // Need to figure this out
-    float meteorSize = static_cast<float>((std::rand() % 30) + 20); // Random size between 20-50
+        if (edge == 0) {
+            meteorX = static_cast<float>(std::rand() % c_Window.getSize().x);
+            meteorY = -50.f;
+        }
+        else if (edge == 1) { 
+            meteorX = static_cast<float>(std::rand() % c_Window.getSize().x);
+            meteorY = c_Window.getSize().y + 50.f;
+        }
+        else if (edge == 2) { 
+            meteorX = -50.f;
+            meteorY = static_cast<float>(std::rand() % c_Window.getSize().y);
+        }
+        else { 
+            meteorX = c_Window.getSize().x + 50.f; 
+            meteorY = static_cast<float>(std::rand() % c_Window.getSize().y);
+        }
 
-    meteors.emplace_back(Vector2f(meteorX, meteorY), meteorSize, texManager);
-    meteors.back().setSpeed(meteorSpeed); //  Set speed based on difficulty
+        float meteorSize = static_cast<float>((std::rand() % 30) + 20); // Random size between 20-50
 
+        meteors.emplace_back(Vector2f(meteorX, meteorY), meteorSize, texManager);
+        meteors.back().setSpeed(meteorSpeed);
+    }
 }
+
 bool engine::checkCollision() {
     CircleShape ball = inst_character.get_ballShape();
     Vector2f ballPos = ball.getPosition();
@@ -211,12 +243,35 @@ void engine::showOptions() {
 
 }
 void engine::setDifficulty(bool hardMode) {
-    meteorSpeed = hardMode ? 400.f : 200.f; // ? Faster meteors in Hard mode
-    meteorSpawnRate = hardMode ? 0.75f : 1.5f; // ? Faster spawn rate
-    meteorBatchSize = hardMode ? 5 : 1; // ? Spawn more meteors at once in Hard mode
+    meteorSpeed = hardMode ? 400.f : 200.f; 
+    meteorSpawnRate = hardMode ? 1.25f : 2.5f;
+    meteorBatchSize = hardMode ? 2 : 1; 
 
-    //  Update existing meteors' speed
+    // Apply speed to existing meteors
     for (auto& m : meteors) {
         m.setSpeed(meteorSpeed);
     }
+
+    hardDifficulty = hardMode;
+}
+
+
+void engine::increaseLevel() {
+    level++;
+    std::cout << "LEVEL UP: LEVEL " << level << std::endl;
+    levelText.setString("Level: " + std::to_string(level));
+    if (hardDifficulty) {
+        meteorSpeed += 50.f; 
+        meteorSpawnRate *= 0.8f; 
+        meteorBatchSize = std::min(meteorBatchSize + 1, 10); // prevents too much rocks caps at 10
+    }
+    else {
+        meteorSpeed += 10.f;
+        meteorSpawnRate *= 0.9f; 
+        meteorBatchSize = std::min(meteorBatchSize + 1, 5);
+    }
+
+
+    scoreThreshold += 100;
+
 }

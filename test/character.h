@@ -6,6 +6,11 @@ using namespace sf;
 
 class character {
 private:
+    float angle = 0.f;  // Angle in radians
+    Vector2f center = { 960.f, 540.f };  // Center of movement
+    float radius = 200.f;  // Fixed orbit radius
+    float angularVelocity = 0.f;  // Speed along orbit
+
     Vector2f m_Position;
     float acceleration = 10.f;
     float friction = 8.0f;
@@ -23,7 +28,7 @@ private:
 
 public:
     character(Vector2f spawnPosition, TextureManager& texManager); // Updated constructor
-    CircleShape get_ballShape();
+    const CircleShape &get_ballShape() const;
 
     void moveLeft();
     void moveRight();
