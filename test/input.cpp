@@ -17,19 +17,46 @@ void engine::input() {
         if (isMenuActive) {
             // Menu Navigation
             if (event.type == Event::KeyPressed) {
-                if (event.key.code == Keyboard::W) {
+                if (event.key.code == Keyboard::W || event.key.code == Keyboard::Up) {
                     menu.moveUp();
                 }
-                else if (event.key.code == Keyboard::S) {
+                else if (event.key.code == Keyboard::S || event.key.code == Keyboard::Down) {
                     menu.moveDown();
                 }
                 else if (event.key.code == Keyboard::Enter) {
                     int selectedItem = menu.getSelectedItem();
                     if (selectedItem == 0) { // Play
-                        isMenuActive = false;
+                        resetGame(); //  Properly resets game
                     }
                     else if (selectedItem == 2) { // Exit
                         c_Window.close();
+                    }
+                }
+            }
+        }
+        else if (isGameOver) {
+            // Game Over handling
+            if (gameOverClock.getElapsedTime().asSeconds() > 1.0f) { //  Wait 1 second before returning to menu
+                isGameOver = false;
+                isMenuActive = true;
+                return; //  Ensure no other input is processed after switching
+            }
+
+            // Game Over Menu Navigation
+            if (event.type == Event::KeyPressed) {
+                if (event.key.code == Keyboard::W) {
+                    gameOverSelection = 0;
+                }
+                else if (event.key.code == Keyboard::S) {
+                    gameOverSelection = 1;
+                }
+                else if (event.key.code == Keyboard::Enter) {
+                    if (gameOverSelection == 0) { // Replay
+                        resetGame(); // Reset and continue
+                    }
+                    else if (gameOverSelection == 1) { // Main Menu
+                        isGameOver = false;
+                        isMenuActive = true;
                     }
                 }
             }
@@ -52,4 +79,3 @@ void engine::input() {
         }
     }
 }
-

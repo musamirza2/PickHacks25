@@ -13,17 +13,23 @@ private:
     RenderWindow c_Window;
     Menu menu;
     bool isMenuActive = true;
+    bool isGameOver = false;  // Tracks if game-over screen is active
+    int gameOverSelection = 0; // 0 = Replay, 1 = Main Menu
+    bool gamePaused = false;
+
     orbit inst_orbit = orbit(100.f, 5.f);
     character inst_character = character(Vector2f(960.f + 85.0f, 540.f));
 
     std::vector<meteor> meteors;
     Clock meteorSpawnClock;
-    bool gamePaused = false;
+    Clock gameOverClock;  // New clock for game over timing
 
     void spawnMeteor();
     void input();
     void update(float dtAsSeconds);
     void draw();
+    void resetGame();
+    void handleGameOver();  // New function to manage game over transition
     bool checkCollision();
 
 public:
