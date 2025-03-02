@@ -1,23 +1,23 @@
-#ifndef MENU_H
-#define MENU_H
-
+#pragma once
 #include <SFML/Graphics.hpp>
 
-const int MENU_ITEMS = 3;
+#define MENU_ITEMS 3
 
 class Menu {
 private:
-    int selectedItemIndex;
     sf::Font font;
     sf::Text menu[MENU_ITEMS];
+    int selectedItemIndex;
 
 public:
     Menu(float width, float height);
+
     void draw(sf::RenderWindow& window);
     void moveUp();
     void moveDown();
     int getSelectedItem();
+
+    // New functions for Mouse Hover & Click
+    void handleMouseHover(sf::Vector2f mousePos);
+    int handleMouseClick(sf::Vector2f mousePos);
 };
-
-#endif
-

@@ -5,6 +5,7 @@
 #include "Menu.h"
 #include "character.h"
 #include "orbit.h"
+#include "OptionsScreen.h"  // Include OptionsScreen
 
 using namespace sf;
 
@@ -12,9 +13,11 @@ class engine {
 private:
     RenderWindow c_Window;
     Menu menu;
+    OptionsScreen* optionsScreen = nullptr;  // Use pointer for dynamic allocation
     bool isMenuActive = true;
-    bool isGameOver = false;  // Tracks if game-over screen is active
-    int gameOverSelection = 0; // 0 = Replay, 1 = Main Menu
+    bool isGameOver = false;
+    bool isOptionsActive = false;
+    int gameOverSelection = 0;
     bool gamePaused = false;
 
     orbit inst_orbit = orbit(100.f, 5.f);
@@ -22,17 +25,29 @@ private:
 
     std::vector<meteor> meteors;
     Clock meteorSpawnClock;
-    Clock gameOverClock;  // New clock for game over timing
+    Clock gameOverClock;
 
     void spawnMeteor();
     void input();
     void update(float dtAsSeconds);
     void draw();
     void resetGame();
-    void handleGameOver();  // New function to manage game over transition
+    void handleGameOver();
     bool checkCollision();
+    void showOptions();  //  Function for Options menu
+    int score = 0;
+    int highestScore = 0;
+    sf::Font font;
+    sf::Text scoreText;
+    sf::Text highScoreText;
+    void resetScore();
+
+
 
 public:
     engine();
+    ~engine();  //  Destructor for memory cleanup
     void start();
+    void increaseScore(int value);
+
 };

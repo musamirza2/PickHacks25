@@ -11,6 +11,8 @@ void engine::draw() {
     for (const auto& m : meteors) {
         c_Window.draw(m.getShape());
     }
+    c_Window.draw(scoreText); // Draw the score on screen
+    c_Window.draw(highScoreText); // Draw highest session score below
 
     c_Window.display();
 }

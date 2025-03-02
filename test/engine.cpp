@@ -9,17 +9,51 @@
 
 using namespace sf;
 
-engine::engine() : menu(VideoMode::getDesktopMode().width, VideoMode::getDesktopMode().height) {
+engine::engine()
+    : menu(VideoMode::getDesktopMode().width, VideoMode::getDesktopMode().height) {
     Vector2f resolution;
-    resolution.x = VideoMode::getDesktopMode().width;
-    resolution.y = VideoMode::getDesktopMode().height;
-    c_Window.create(VideoMode(resolution.x, resolution.y), "Simple Game Engine", Style::Fullscreen);
+    resolution.x = static_cast<float>(VideoMode::getDesktopMode().width);
+    resolution.y = static_cast<float>(VideoMode::getDesktopMode().height);
+
+    c_Window.create(VideoMode(static_cast<unsigned int>(resolution.x), static_cast<unsigned int>(resolution.y)),
+        "Simple Game Engine", Style::Fullscreen);
+
     std::srand(static_cast<unsigned int>(std::time(0)));
+
+    if (!font.loadFromFile("QABAXEL.ttf")) { // Ensure this font file exists
+        std::cerr << "Error loading font\n";
+    }
+
+    scoreText.setFont(font);
+    scoreText.setCharacterSize(40);
+    scoreText.setFillColor(Color::White);
+    scoreText.setPosition(20, 20); // Display in the top-left corner
+    scoreText.setString("Score: " + std::to_string(score));
+
+
+    // Initialize high score text (Displayed in the game window)
+    highScoreText.setFont(font);
+    highScoreText.setCharacterSize(40);
+    highScoreText.setFillColor(Color::Yellow);
+    highScoreText.setPosition(20, 80);  // Positioned below the score
+    highScoreText.setString("High Score: 0");
+
+
+    //  Initialize OptionsScreen
+    optionsScreen = new OptionsScreen(resolution.x, resolution.y);
+
+
+}
+
+engine::~engine() {
+    delete optionsScreen;  // Prevent memory leaks
+    optionsScreen = nullptr;
 }
 
 void engine::start() {
     Clock clock;
-    isMenuActive = true; // Ensure the game starts at the menu
+    isMenuActive = true;
+    isOptionsActive = false; // Initialize options menu as inactive
 
     while (c_Window.isOpen()) {
         Time dt = clock.restart();
@@ -28,7 +62,10 @@ void engine::start() {
         input();
 
         if (isGameOver) {
-            handleGameOver(); // Handles game over transition
+            handleGameOver();
+        }
+        else if (isOptionsActive) { // Show options menu if active
+            showOptions();
         }
         else if (isMenuActive) {
             c_Window.clear();
@@ -43,7 +80,37 @@ void engine::start() {
         }
     }
 }
+void engine::increaseScore(int value) {
+    score += value;
+    scoreText.setString("Score: " + std::to_string(score));
+    // Check if the new score is the highest in the current session
 
+    if (score > highestScore) {
+        highestScore = score;
+        highScoreText.setString("High Score: " + std::to_string(highestScore));
+    }
+
+}
+void engine::resetScore() {
+    score = 0;  // Reset score
+    scoreText.setString("Score: 0");  // Update display text
+}
+
+
+void engine::resetGame() {
+    meteors.clear();  // Remove all meteors
+    inst_character = character(Vector2f(960.f + 85.0f, 540.f));  // Reset character position
+    gamePaused = false;
+    isGameOver = false;
+    isMenuActive = false;  // Resume game from menu
+
+    meteorSpawnClock.restart();  //  Restart meteor spawn timer
+    resetScore();  // Call the function to reset score
+
+    c_Window.clear();
+    draw();
+    c_Window.display();
+}
 void engine::handleGameOver() {
     c_Window.clear();
     Font font;
@@ -61,25 +128,19 @@ void engine::handleGameOver() {
     c_Window.draw(gameOverText);
     c_Window.display();
 
-    if (gameOverClock.getElapsedTime().asSeconds() > 1.0f) {  //  Show for 1 second
+    if (gameOverClock.getElapsedTime().asSeconds() > 1.0f) {
         isGameOver = false;
-        isMenuActive = true; //  Automatically go back to the main menu
+        isMenuActive = true;
     }
 }
+void engine::spawnMeteor() {
+    float meteorX = static_cast<float>(std::rand() % c_Window.getSize().x);
+    float meteorY = 0; // Meteors start from the top
 
-void engine::resetGame() {
-    meteors.clear();
-    inst_character = character(Vector2f(960.f + 85.0f, 540.f));
-    gamePaused = false;
-    isGameOver = false;
-    isMenuActive = false;
-    meteorSpawnClock.restart();
+    float meteorSize = static_cast<float>((std::rand() % 30) + 20); // Random size between 20-50
+
+    meteors.emplace_back(Vector2f(meteorX, meteorY), meteorSize);
 }
-
-void engine::spawnMeteor() {  // Define spawnMeteor() here
-    meteors.emplace_back(c_Window.getSize());
-}
-
 bool engine::checkCollision() {
     CircleShape ball = inst_character.get_ballShape();
     Vector2f ballPos = ball.getPosition();
@@ -96,9 +157,36 @@ bool engine::checkCollision() {
 
         if (distance < (ballRadius + meteorRadius)) {
             isGameOver = true;
-            gameOverClock.restart();  //  Start game over timer
+            gameOverClock.restart();
             return true;
         }
     }
     return false;
+}
+
+void engine::showOptions() {
+    bool inOptions = true;
+    bool inMenu = false;
+
+    while (inOptions && c_Window.isOpen()) {
+        Event event;
+        while (c_Window.pollEvent(event)) {
+            if (event.type == Event::Closed) {
+                c_Window.close();
+                return;
+            }
+
+            optionsScreen->handleEvent(event, c_Window, inOptions, inMenu);
+        }
+
+        c_Window.clear(Color::Black);
+        optionsScreen->draw(c_Window);
+        c_Window.display();
+
+        if (inMenu) {
+            isOptionsActive = false;
+            isMenuActive = true;
+            return;
+        }
+    }
 }

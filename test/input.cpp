@@ -9,13 +9,32 @@ void engine::input() {
             c_Window.close();
         }
 
-        // Escape will close the window
         if (Keyboard::isKeyPressed(Keyboard::Escape)) {
             c_Window.close();
         }
 
         if (isMenuActive) {
-            // Menu Navigation
+            if (event.type == Event::MouseMoved) {
+                menu.handleMouseHover(Vector2f(event.mouseMove.x, event.mouseMove.y)); //Mouse Hover
+            }
+
+            if (event.type == Event::MouseButtonPressed) {
+                if (event.mouseButton.button == sf::Mouse::Left) {
+                    int clickedOption = menu.handleMouseClick(Vector2f(event.mouseButton.x, event.mouseButton.y)); // Mouse Click
+
+                    if (clickedOption == 0) {  // Play
+                        resetGame();
+                    }
+                    else if (clickedOption == 1) {  // Options
+                        isMenuActive = false;
+                        isOptionsActive = true;
+                    }
+                    else if (clickedOption == 2) {  // Exit
+                        c_Window.close();
+                    }
+                }
+            }
+
             if (event.type == Event::KeyPressed) {
                 if (event.key.code == Keyboard::W || event.key.code == Keyboard::Up) {
                     menu.moveUp();
@@ -25,36 +44,59 @@ void engine::input() {
                 }
                 else if (event.key.code == Keyboard::Enter) {
                     int selectedItem = menu.getSelectedItem();
-                    if (selectedItem == 0) { // Play
-                        resetGame(); //  Properly resets game
+                    if (selectedItem == 0) {  // Play
+                        resetGame();
                     }
-                    else if (selectedItem == 2) { // Exit
+                    else if (selectedItem == 1) {  // Options
+                        isMenuActive = false;
+                        isOptionsActive = true;
+                    }
+                    else if (selectedItem == 2) {  // Exit
                         c_Window.close();
                     }
                 }
             }
         }
         else if (isGameOver) {
-            // Game Over handling
-            if (gameOverClock.getElapsedTime().asSeconds() > 1.0f) { //  Wait 1 second before returning to menu
+            if (gameOverClock.getElapsedTime().asSeconds() > 1.0f) {
                 isGameOver = false;
                 isMenuActive = true;
-                return; //  Ensure no other input is processed after switching
+                return;
             }
 
-            // Game Over Menu Navigation
+            if (event.type == Event::MouseMoved) {
+                if (gameOverSelection == 0 && event.mouseMove.y > 450) {
+                    gameOverSelection = 1;  // Move down when mouse hovers "Main Menu"
+                }
+                else if (gameOverSelection == 1 && event.mouseMove.y < 450) {
+                    gameOverSelection = 0;  // Move up when mouse hovers "Replay"
+                }
+            }
+
+            if (event.type == Event::MouseButtonPressed) {
+                if (event.mouseButton.button == sf::Mouse::Left) {
+                    if (gameOverSelection == 0) {  // Replay
+                        resetGame();
+                    }
+                    else if (gameOverSelection == 1) {  // Main Menu
+                        isGameOver = false;
+                        isMenuActive = true;
+                    }
+                }
+            }
+
             if (event.type == Event::KeyPressed) {
-                if (event.key.code == Keyboard::W) {
+                if (event.key.code == Keyboard::W || event.key.code == Keyboard::Up) {
                     gameOverSelection = 0;
                 }
-                else if (event.key.code == Keyboard::S) {
+                else if (event.key.code == Keyboard::S || event.key.code == Keyboard::Down) {
                     gameOverSelection = 1;
                 }
                 else if (event.key.code == Keyboard::Enter) {
-                    if (gameOverSelection == 0) { // Replay
-                        resetGame(); // Reset and continue
+                    if (gameOverSelection == 0) {  // Replay
+                        resetGame();
                     }
-                    else if (gameOverSelection == 1) { // Main Menu
+                    else if (gameOverSelection == 1) {  // Main Menu
                         isGameOver = false;
                         isMenuActive = true;
                     }
@@ -62,7 +104,6 @@ void engine::input() {
             }
         }
         else {
-            // Handle the player moving
             if (Keyboard::isKeyPressed(Keyboard::A)) {
                 inst_character.moveLeft();
             }
