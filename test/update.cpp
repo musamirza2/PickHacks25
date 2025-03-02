@@ -40,4 +40,5 @@ void engine::update(float dtAsSeconds) {
     if (checkCollision()) {
         gamePaused = true;
     }
+
 }
