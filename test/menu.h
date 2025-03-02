@@ -8,6 +8,7 @@ class Menu {
 private:
     sf::Font font;
     sf::Text menu[MENU_ITEMS];
+    sf::Text titleText;
     int selectedItemIndex;
 
     // Background

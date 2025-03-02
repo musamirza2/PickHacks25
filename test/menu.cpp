@@ -7,6 +7,14 @@ Menu::Menu(float width, float height)
     if (!font.loadFromFile("QABAXEL.ttf")) {
         std::cerr << "Error loading font\n";
     }
+    titleText.setFont(font);
+    titleText.setString("ORBITAL");  //  Change this to your actual game title
+    titleText.setCharacterSize(80);  //  Large font size for the title
+    titleText.setFillColor(sf::Color::Red);
+
+    // Center title horizontally
+    float titleWidth = titleText.getLocalBounds().width;
+    titleText.setPosition((width / 2) - (titleWidth / 2), height / 4 - 50);
 
     std::string options[MENU_ITEMS] = { "Play", "Options", "Exit" };
 
@@ -15,7 +23,12 @@ Menu::Menu(float width, float height)
         menu[i].setString(options[i]);
         menu[i].setCharacterSize(40);
         menu[i].setFillColor(sf::Color::White);
-        menu[i].setPosition(width / 2 - 50, height / 2 + i * 60);
+        
+
+        float textWidth = menu[i].getLocalBounds().width;
+        float textHeight = menu[i].getLocalBounds().height;
+
+        menu[i].setPosition((width / 2) - (textWidth / 2), (height / 2) - (MENU_ITEMS * 30) + (i * 60));
     }
 
     selectedItemIndex = 0;
@@ -25,6 +38,8 @@ Menu::Menu(float width, float height)
 void Menu::draw(sf::RenderWindow& window) {
     background.update();
     background.draw(window);
+
+    window.draw(titleText);
 
     for (int i = 0; i < MENU_ITEMS; i++) {
         window.draw(menu[i]);

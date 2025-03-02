@@ -12,12 +12,13 @@ OptionsScreen::OptionsScreen(float width, float height)
     easyButton.setPosition(width / 2 - 100, height / 3);
     easyButton.setFillColor(sf::Color::Transparent);
 
+
     hardButton.setSize(sf::Vector2f(200, 50));
-    hardButton.setPosition(width / 2 - 100, height / 3 + 60);
+    hardButton.setPosition(width / 2 - 100, height / 3 + 120);
     hardButton.setFillColor(sf::Color::Transparent);
 
     backButton.setSize(sf::Vector2f(200, 50));
-    backButton.setPosition(width / 2 - 100, height / 3 + 120);
+    backButton.setPosition(width / 2 - 100, height / 3 + 200);
     backButton.setFillColor(sf::Color::Transparent);
 
     // Initialize labels
@@ -26,6 +27,7 @@ OptionsScreen::OptionsScreen(float width, float height)
     easyLabel.setCharacterSize(24);
     easyLabel.setFillColor(sf::Color::White);
     easyLabel.setPosition(easyButton.getPosition().x + 70, easyButton.getPosition().y + 10);
+
 
     hardLabel.setFont(font);
     hardLabel.setString("Hard");
@@ -41,7 +43,7 @@ OptionsScreen::OptionsScreen(float width, float height)
 
     // Initialize volume slider
     volumeSlider.setSize(sf::Vector2f(200, 10));
-    volumeSlider.setPosition(width / 2 - 100, height / 2 + 80);
+    volumeSlider.setPosition(width / 2 - 100, height / 2 + 100);
     volumeSlider.setFillColor(sf::Color::Blue);
 
     volumeText.setFont(font);
