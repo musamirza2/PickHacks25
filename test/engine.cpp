@@ -110,7 +110,10 @@ void engine::resetScore() {
     scoreText.setString("Score: 0");  // Update display text
 }
 
-
+void engine::resetLevel() {
+    level = 0;  // Reset score
+    levelText.setString("Level: 1");  // Update display text
+}
 void engine::resetGame() {
     meteors.clear();  // Remove all meteors
     inst_character = character(Vector2f(960.f + 85.0f, 540.f), texManager);  // Reset character position
@@ -119,9 +122,12 @@ void engine::resetGame() {
     isMenuActive = false;  // Resume game from menu
 
     meteorSpawnClock.restart();  //  Restart meteor spawn timer
-    resetScore();  // Call the function to reset score
-    level = 1;  // Reset level
+    resetScore(); 
+    resetLevel();// Call the function to reset score
+    level = 1; // Reset level
     // Reset Diff
+
+    
     meteorSpeed = hardDifficulty ? 200.f : 100.f;
     meteorSpawnRate = hardDifficulty ? 1.25f : 2.5f;
     meteorBatchSize = hardDifficulty ? 2 : 1;
@@ -237,8 +243,10 @@ void engine::showOptions() {
             setDifficulty(true); // Set difficulty to Hard (increase speed)
         }
 
-        isOptionsActive = false;
-        isMenuActive = false;
+        if (!inOptions) {  // If "Back" is pressed, return to menu
+            isOptionsActive = false;
+            isMenuActive = true;  // Properly return to main menu
+        }
     }
 
 }

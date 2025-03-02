@@ -54,6 +54,7 @@ private:
     int scoreThreshold = 100;
     Text levelText;
     void increaseLevel();
+    void resetLevel();
 
 public:
     engine();
