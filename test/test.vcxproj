@@ -152,6 +152,7 @@
     <ClInclude Include="meteor.h" />
     <ClInclude Include="OptionsScreen.h" />
     <ClInclude Include="orbit.h" />
+    <ClInclude Include="TextureManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

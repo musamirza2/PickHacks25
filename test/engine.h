@@ -12,6 +12,7 @@ using namespace sf;
 
 class engine {
 private:
+    TextureManager texManager;
     RenderWindow c_Window;
     Menu menu;
     Background background;

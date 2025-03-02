@@ -50,6 +50,9 @@ engine::engine()
 engine::~engine() {
     delete optionsScreen;  // Prevent memory leaks
     optionsScreen = nullptr;
+    // Added but need to test out.
+    meteors.clear();
+    c_Window.close();
 }
 
 void engine::start() {
@@ -135,13 +138,16 @@ void engine::handleGameOver() {
         isMenuActive = true;
     }
 }
+
+TextureManager texManager;
 void engine::spawnMeteor() {
     float meteorX = static_cast<float>(std::rand() % c_Window.getSize().x);
     float meteorY = 0; // Meteors start from the top
 
+    // Need to figure this out
     float meteorSize = static_cast<float>((std::rand() % 30) + 20); // Random size between 20-50
 
-    meteors.emplace_back(Vector2f(meteorX, meteorY), meteorSize);
+    meteors.emplace_back(Vector2f(meteorX, meteorY), meteorSize, texManager);
 }
 bool engine::checkCollision() {
     CircleShape ball = inst_character.get_ballShape();
