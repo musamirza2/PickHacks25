@@ -9,7 +9,7 @@ class OptionsScreen {
 public:
     OptionsScreen(float width, float height);  // Constructor
 
-    void handleEvent(sf::Event event, sf::RenderWindow& window, bool& inOptions, bool& inMenu);
+    void handleEvent(sf::Event event, sf::RenderWindow& window, bool& inOptions, bool& inMenu, bool& easyModeSelected, bool& hardModeSelected);
     void draw(sf::RenderWindow& window);
 
     std::string getDifficulty() const;

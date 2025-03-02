@@ -49,3 +49,9 @@ const Sprite& meteor::getSprite() const {
     return Rock_sprite;
 }
 
+void meteor::setSpeed(float newSpeed) {
+    speed = newSpeed;
+    if (std::sqrt(velocity.x * velocity.x + velocity.y * velocity.y) > 0) {
+        velocity = (velocity / std::sqrt(velocity.x * velocity.x + velocity.y * velocity.y)) * speed;
+    }
+}

@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "Background.h"
 
 #define MENU_ITEMS 3
@@ -10,6 +11,7 @@ private:
     sf::Text menu[MENU_ITEMS];
     sf::Text titleText;
     int selectedItemIndex;
+    sf::Music backgroundMusic;
 
     // Background
     Background background;

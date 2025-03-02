@@ -53,40 +53,34 @@ OptionsScreen::OptionsScreen(float width, float height)
     volumeText.setPosition(volumeSlider.getPosition().x, volumeSlider.getPosition().y - 30);
 }
 
-void OptionsScreen::handleEvent(sf::Event event, sf::RenderWindow& window, bool& inOptions, bool& inMenu) {
+void OptionsScreen::handleEvent(sf::Event event, sf::RenderWindow& window, bool& inOptions, bool& inMenu, bool& easyModeSelected, bool& hardModeSelected) {
     sf::Vector2f mousePos(sf::Mouse::getPosition(window));
 
     // Detect mouse hover over buttons
-    if (easyButton.getGlobalBounds().contains(mousePos)) {
-        selectedOption = 0;
-    }
-    else if (hardButton.getGlobalBounds().contains(mousePos)) {
-        selectedOption = 1;
-    }
-    else if (backButton.getGlobalBounds().contains(mousePos)) {
-        selectedOption = 2;
+    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+        if (easyButton.getGlobalBounds().contains(mousePos)) {
+            selectedOption = 0;
+            difficulty = "Easy";
+            easyModeSelected = true;
+            hardModeSelected = false;
+            inOptions = false;
+            inMenu = false;
+        }
+        else if (hardButton.getGlobalBounds().contains(mousePos)) {
+            selectedOption = 1;
+            difficulty = "Hard";
+            easyModeSelected = false;
+            hardModeSelected = true;
+            inOptions = false;
+            inMenu = false;
+        }
+        else if (backButton.getGlobalBounds().contains(mousePos)) {
+            selectedOption = 2;
+            inOptions = false;
+            inMenu = true;
+        }
     }
 
-    if (event.type == sf::Event::KeyPressed) {
-        if (event.key.code == sf::Keyboard::Up) {
-            selectedOption = (selectedOption - 1 + 3) % 3;
-        }
-        else if (event.key.code == sf::Keyboard::Down) {
-            selectedOption = (selectedOption + 1) % 3;
-        }
-        else if (event.key.code == sf::Keyboard::Enter) {
-            if (selectedOption == 0) {
-                difficulty = "Easy";
-            }
-            else if (selectedOption == 1) {
-                difficulty = "Hard";
-            }
-            else if (selectedOption == 2) {
-                inOptions = false;
-                inMenu = true;
-            }
-        }
-    }
 
     // Allow mouse scrolling for volume slider
     if (event.type == sf::Event::MouseWheelMoved) {

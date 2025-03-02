@@ -148,6 +148,8 @@ void engine::spawnMeteor() {
     float meteorSize = static_cast<float>((std::rand() % 30) + 20); // Random size between 20-50
 
     meteors.emplace_back(Vector2f(meteorX, meteorY), meteorSize, texManager);
+    meteors.back().setSpeed(meteorSpeed); //  Set speed based on difficulty
+
 }
 bool engine::checkCollision() {
     CircleShape ball = inst_character.get_ballShape();
@@ -175,6 +177,8 @@ bool engine::checkCollision() {
 void engine::showOptions() {
     bool inOptions = true;
     bool inMenu = false;
+    bool easyModeSelected = false;
+    bool hardModeSelected = false;
 
     while (inOptions && c_Window.isOpen()) {
         Event event;
@@ -184,17 +188,35 @@ void engine::showOptions() {
                 return;
             }
 
-            optionsScreen->handleEvent(event, c_Window, inOptions, inMenu);
+            optionsScreen->handleEvent(event, c_Window, inOptions, inMenu, easyModeSelected, hardModeSelected);
         }
 
         c_Window.clear(Color::Black);
         optionsScreen->draw(c_Window);
         c_Window.display();
 
-        if (inMenu) {
-            isOptionsActive = false;
-            isMenuActive = true;
-            return;
+        // Ensure new game starts correctly when switching difficulty
+        if (easyModeSelected) {
+            resetGame();  //  Reset game to initial state
+            setDifficulty(false); // Set difficulty to Easy
         }
+        else if (hardModeSelected) {
+            resetGame();  //  Reset game to initial state
+            setDifficulty(true); // Set difficulty to Hard (increase speed)
+        }
+
+        isOptionsActive = false;
+        isMenuActive = false;
+    }
+
+}
+void engine::setDifficulty(bool hardMode) {
+    meteorSpeed = hardMode ? 400.f : 200.f; // ? Faster meteors in Hard mode
+    meteorSpawnRate = hardMode ? 0.75f : 1.5f; // ? Faster spawn rate
+    meteorBatchSize = hardMode ? 5 : 1; // ? Spawn more meteors at once in Hard mode
+
+    //  Update existing meteors' speed
+    for (auto& m : meteors) {
+        m.setSpeed(meteorSpeed);
     }
 }

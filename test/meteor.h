@@ -24,6 +24,7 @@ public:
     bool hasScored() const;  // Check if the meteor has been counted
     void markScored();       // Mark the meteor as counted
     const Sprite& getSprite() const;
+    void setSpeed(float newSpeed);
 
 
 };

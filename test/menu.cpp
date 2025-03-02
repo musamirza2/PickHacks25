@@ -29,6 +29,13 @@ Menu::Menu(float width, float height)
         float textHeight = menu[i].getLocalBounds().height;
 
         menu[i].setPosition((width / 2) - (textWidth / 2), (height / 2) - (MENU_ITEMS * 30) + (i * 60));
+        if (!backgroundMusic.openFromFile("background_music.ogg")) {
+            std::cerr << "Error loading background music" << std::endl;
+        }
+        else {
+            backgroundMusic.setLoop(true);
+            backgroundMusic.play();
+        }
     }
 
     selectedItemIndex = 0;

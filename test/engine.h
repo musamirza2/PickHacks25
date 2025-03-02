@@ -19,14 +19,19 @@ private:
     OptionsScreen* optionsScreen = nullptr;  // Use pointer for dynamic allocation
     bool isMenuActive = true;
     bool isGameOver = false;
+    float meteorSpawnRate =1.5f; 
+    int meteorBatchSize = 1;
     bool isOptionsActive = false;
     int gameOverSelection = 0;
     bool gamePaused = false;
+    float meteorSpeed = 200.f; //  Default speed for Easy mode
+    std::vector<meteor> meteors;
+
 
     orbit inst_orbit = orbit(100.f, 5.f);
     character inst_character = character(Vector2f(960.f + 85.0f, 540.f));
 
-    std::vector<meteor> meteors;
+ 
     Clock meteorSpawnClock;
     Clock gameOverClock;
 
@@ -52,5 +57,5 @@ public:
     ~engine();  //  Destructor for memory cleanup
     void start();
     void increaseScore(int value);
-
+    void setDifficulty(bool hardMode);
 };
