@@ -5,27 +5,29 @@
 #include "TextureManager.h"
 
 meteor::meteor(Vector2f startPosition, float size, TextureManager& texManager) {
-    Rock_sprite.setTexture(texManager.getTexture("C:/Users/solan/source/repos/PickHacks25/test/ROCK1.PNG"));
+    Rock_sprite.setTexture(texManager.getTexture("ROCK1.PNG"));
     position = startPosition;
 
-    // Set meteor size
+    // Set meteor hitbox size
     shape.setRadius(size);
     shape.setFillColor(Color::Black);
-    shape.setPosition(position);
 
-    // Randomize velocity towards the center of the screen
+    // Center hitbox and sprite
+    shape.setOrigin(size, size);
+    Rock_sprite.setOrigin(Rock_sprite.getTexture()->getSize().x / 2.f, Rock_sprite.getTexture()->getSize().y / 2.f);
+
+    // Scale sprite to match hitbox
+    float scaleFactor = (size * 2) / static_cast<float>(Rock_sprite.getTexture()->getSize().x);
+    Rock_sprite.setScale(scaleFactor - 0.25f, scaleFactor - 0.25f);
+
+    // Set position
+    shape.setPosition(position);
+    Rock_sprite.setPosition(position);
+
+    // Set velocity towards the center
     Vector2f center(960.f, 540.f); // Assuming screen center for 1920x1080
     Vector2f direction = center - position;
-    float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-    velocity = direction / length * speed;
-    float radius = shape.getRadius();
-
-    Vector2u textureSize = Rock_sprite.getTexture()->getSize();
-
-    float scaleFactor = (radius * 2) / static_cast<float>(textureSize.x);
-    Rock_sprite.setScale(scaleFactor, scaleFactor);
-
-    Rock_sprite.setPosition(position);
+    velocity = (direction / std::sqrt(direction.x * direction.x + direction.y * direction.y)) * speed;
 }
 bool meteor::hasEnteredRing() const {
     return enteredRing;
