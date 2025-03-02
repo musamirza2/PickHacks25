@@ -9,6 +9,7 @@ void engine::draw() {
 
     inst_orbit.draw(c_Window);
     c_Window.draw(inst_character.get_ballShape());
+    c_Window.draw(inst_character.getSprite());
 
     for (const auto& m : meteors) {
         c_Window.draw(m.getShape());

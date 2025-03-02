@@ -4,7 +4,7 @@ orbit::orbit(float radius, float thickness) {
     ring.setRadius(radius);
     ring.setPointCount(100); // Smooth circle
     ring.setOutlineThickness(thickness);
-    ring.setOutlineColor(Color::White);
+    ring.setOutlineColor(Color::Transparent);
     ring.setFillColor(Color::Transparent);
 }
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "TextureManager.h"
 
 using namespace sf;
 
@@ -10,6 +11,8 @@ private:
     float friction = 8.0f;
     float maxSpeed = 10.f;
     CircleShape ballShape;
+    Texture Character_texture;
+    Sprite Character_sprite;
 
 
     // Where character is currently moving
@@ -19,7 +22,7 @@ private:
     bool c_upButton{};
 
 public:
-    character(Vector2f spawnPosition); // Updated constructor
+    character(Vector2f spawnPosition, TextureManager& texManager); // Updated constructor
     CircleShape get_ballShape();
 
     void moveLeft();
@@ -31,6 +34,8 @@ public:
     void stopRight();
     void stopUp();
     void stopDown();
+
+    const Sprite& getSprite() const;
 
     void update(float elapsedTime);
 };

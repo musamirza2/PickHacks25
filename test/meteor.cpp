@@ -5,12 +5,12 @@
 #include "TextureManager.h"
 
 meteor::meteor(Vector2f startPosition, float size, TextureManager& texManager) {
-    Rock_sprite.setTexture(texManager.getTexture("C:/Users/solan/source/repos/PickHacks25/test/ROCK.PNG"));
+    Rock_sprite.setTexture(texManager.getTexture("C:/Users/solan/source/repos/PickHacks25/test/ROCK1.PNG"));
     position = startPosition;
 
     // Set meteor size
     shape.setRadius(size);
-    shape.setFillColor(Color::Yellow);
+    shape.setFillColor(Color::Black);
     shape.setPosition(position);
 
     // Randomize velocity towards the center of the screen
@@ -18,7 +18,12 @@ meteor::meteor(Vector2f startPosition, float size, TextureManager& texManager) {
     Vector2f direction = center - position;
     float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
     velocity = direction / length * speed;
-    Rock_sprite.setScale(Vector2(shape.getScale().x * 3, shape.getScale().y * 3));
+    float radius = shape.getRadius();
+
+    Vector2u textureSize = Rock_sprite.getTexture()->getSize();
+
+    float scaleFactor = (radius * 2) / static_cast<float>(textureSize.x);
+    Rock_sprite.setScale(scaleFactor, scaleFactor);
 
     Rock_sprite.setPosition(position);
 }

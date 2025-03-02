@@ -29,7 +29,7 @@ private:
 
 
     orbit inst_orbit = orbit(100.f, 5.f);
-    character inst_character = character(Vector2f(960.f + 85.0f, 540.f));
+    character inst_character = character(Vector2f(960.f + 85.0f, 540.f), texManager);
 
  
     Clock meteorSpawnClock;

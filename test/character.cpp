@@ -1,14 +1,19 @@
 #include "character.h"
 #include "engine.h"
 #include "math.h"
+#include "TextureManager.h"
 using namespace sf;
 
-character::character(Vector2f spawnPosition)
+character::character(Vector2f spawnPosition, TextureManager& texManager)
 {
+    Character_sprite.setTexture(texManager.getTexture("C:/Users/solan/source/repos/PickHacks25/test/PLAYER.PNG"));
+
     ballShape.setRadius(15.5f);
-    ballShape.setFillColor(Color::Red);
+    Character_sprite.setScale(3.f,3.f);
+    ballShape.setFillColor(Color::Transparent);
     m_Position = spawnPosition;  // Set the spawn position
     ballShape.setPosition(m_Position);
+    Character_sprite.setPosition(m_Position);
 }
 
 CircleShape character::get_ballShape()
@@ -16,6 +21,9 @@ CircleShape character::get_ballShape()
     return ballShape;
 }
 
+const Sprite& character::getSprite() const {
+    return Character_sprite;
+}
 void character::moveLeft() {
     c_leftButton = true;
 }
@@ -80,4 +88,5 @@ void character::update(float elapsedTime) {
     m_Position.y = center.y + magnatude * std::sin(phasor);
 
     ballShape.setPosition(m_Position);
+    Character_sprite.setPosition(m_Position);
 }

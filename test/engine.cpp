@@ -104,7 +104,7 @@ void engine::resetScore() {
 
 void engine::resetGame() {
     meteors.clear();  // Remove all meteors
-    inst_character = character(Vector2f(960.f + 85.0f, 540.f));  // Reset character position
+    inst_character = character(Vector2f(960.f + 85.0f, 540.f), texManager);  // Reset character position
     gamePaused = false;
     isGameOver = false;
     isMenuActive = false;  // Resume game from menu
